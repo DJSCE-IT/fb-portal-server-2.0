@@ -1,121 +1,98 @@
-# Flask API Server
+# Feedback Portal Server (Flask)
 
-## Everything in this repo is for demo right now
-## The development is going on and the Apis would be up and ready soon!
+This is a Flask implementation of the Feedback Portal Server, providing the same API functionality as the original Django version.
 
-A modern Flask API server with authentication, user management, and proper project structure.
+## Setup Instructions
 
-## Features
+### 1. Create a Virtual Environment
 
-- User authentication with JWT
-- User registration and login
-- Profile management
-- Protected routes
-- SQLAlchemy ORM
-- Database migrations
-- CORS support
-- Environment variables configuration
-
-## Project Structure
-
-```
-api/
-├── config/
-│   └── config.py         # Configuration settings
-├── models/
-│   └── user.py          # Database models
-├── routes/
-│   ├── auth.py          # Authentication routes
-│   ├── users.py         # User management routes
-│   └── main.py          # Main application routes
-├── schemas/             # Data serialization schemas
-├── services/           # Business logic
-└── utils/              # Utility functions
-```
-
-## Setup
-
-1. Create a virtual environment:
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-2. Install dependencies:
+### 2. Install Dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Create a `.env` file in the root directory:
+### 3. Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
 ```
-SECRET_KEY=your-secret-key
-JWT_SECRET_KEY=your-jwt-secret
-DATABASE_URL=sqlite:///app.db
+SECRET_KEY=your_secret_key
+MONGODB_URI=your_mongodb_uri
+
+# Email settings
+EMAIL_HOST=smtp.example.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=your_email@example.com
+EMAIL_HOST_PASSWORD=your_email_password
+
+# Frontend URL
+FRONT_END_LINK=http://localhost:3000
+DJ_LOGO=https://example.com/logo.png
 ```
 
-4. Initialize the database:
+### 4. Run the Application
+
 ```bash
-flask db init
-flask db migrate
-flask db upgrade
+python run.py
 ```
 
-5. Run the server:
-```bash
-python -m api.main
-```
+The server will start at `http://localhost:5000`.
 
 ## API Endpoints
 
+The API endpoints match the original Django implementation:
+
 ### Authentication
+- `POST /api/login` - User login
+- `POST /api/sendOtp` - Send OTP for verification
+- `POST /api/verifyOtp` - Verify OTP
+- `POST /api/resetPasswordMail` - Send reset password email
+- `POST /api/getPass` - Verify reset password token
+- `POST /api/resetPassword` - Reset password
+- `POST /api/token/refresh/` - Refresh JWT token
+- `POST /api/createTeacher` - Create a teacher account
+- `GET /api/getAllTeacherMails` - Get all teacher emails
 
-- `POST /auth/register` - Register a new user
-  ```json
-  {
-    "username": "example",
-    "email": "user@example.com",
-    "password": "secure_password"
-  }
-  ```
+### Feedback Forms
+- `POST /api/createFeedbackForm` - Create a feedback form
+- `POST /api/updateFeedbackform` - Update a feedback form
+- `POST /api/deleteFeedbackform` - Delete a feedback form
+- `GET /api/getFeedbackForm` - Get feedback forms
+- `GET /api/getFeedbackData` - Get feedback data
+- `POST /api/saveFeedbackFormResult` - Save feedback form result
+- `POST /api/sendReminder` - Send reminder to students
+- `GET /api/getSDashData` - Get student dashboard data
+- `GET /api/getSDashDataFilled` - Get filled feedback data
+- `GET /api/getSDashDataForm` - Get specific form data
 
-- `POST /auth/login` - Login user
-  ```json
-  {
-    "email": "user@example.com",
-    "password": "secure_password"
-  }
-  ```
+### Subjects
+- `GET /api/getallsubjects` - Get all subjects
+- `DELETE /api/deletesubject/<subject_id>/` - Delete a subject
+- `POST /api/addTheorySubject` - Add a theory subject
+- `POST /api/addPractical` - Add a practical subject
 
-### User Management
+### Batches
+- `GET /api/getBatches` - Get all batches
+- `GET /api/getYrBatches` - Get batches for a specific year
+- `GET /api/getYearBatches` - Get all years and their batches
+- `POST /api/bac` - Create a batch
+- `POST /api/bacUpdate` - Update a batch
+- `POST /api/delBatch` - Delete a batch
 
-- `GET /users/profile` - Get user profile (requires authentication)
-- `PUT /users/profile` - Update user profile (requires authentication)
-- `DELETE /users/profile` - Delete user account (requires authentication)
+### Users
+- `GET /api/getProfile` - Get user profile
+- `POST /api/saveProfile` - Update user profile
+- `GET /api/getTUsers/<username>` - Get teacher details
+- `GET /api/getuserslist` - Get all users
+- `POST /api/tSettings` - Update teacher permissions
 
-### Main Routes
-
-- `GET /` - Welcome message and API status
-- `GET /protected` - Example protected route (requires authentication)
-
-## Authentication
-
-To access protected routes, include the JWT token in the Authorization header:
-```
-Authorization: Bearer <your-jwt-token>
-```
-
-## Development
-
-To run the server in development mode:
-```bash
-export FLASK_ENV=development  # On Windows: set FLASK_ENV=development
-export FLASK_APP=api.main
-flask run
-```
-
-## Testing
-
-Run tests using pytest:
-```bash
-pytest
-```
+### Instances
+- `POST /api/createNewInst` - Create a new feedback instance
+- `POST /api/generateSecretCode` - Generate a secret code for teacher registration 
